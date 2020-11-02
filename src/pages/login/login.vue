@@ -2,8 +2,8 @@
   <div class="login">
     <div class="con">
       <h3>登录</h3>
-      <el-input v-model="input" placeholder="请输入用户名" class="ipt"></el-input>
-      <el-input v-model="input" placeholder="请输入密码" class="ipt"></el-input>
+      <el-input v-model="form.username" placeholder="请输入用户名" class="ipt"></el-input>
+      <el-input v-model="form.password" placeholder="请输入密码" class="ipt"></el-input>
       <div>
         <el-button type="primary" class="btn" @click="login">登录</el-button>
       </div>
@@ -11,18 +11,38 @@
   </div>
 </template>
 <script>
+import {reqLogin} from '../../util/request' 
+import {alertSuccess,alertwaring} from '../../util/alert' 
+import {mapActions} from 'vuex' 
+
 export default {
   components: {},
   data() {
     return {
-      input: "",
+   
+      form:{
+        username:'',
+        password:''
+      }
     };
   },
   methods: {
-    login(){
-      // this.$router.push('/index')
-       this.$router.push('/')
-    }
+     ...mapActions(["changeUserInfoAction"]),
+        login(){
+            reqLogin(this.form).then(res=>{
+                if(res.data.code==200){
+                    //1.存用户信息 res.data.list 
+                    //本地存储存进去的内容都会变成string,所以在存之前需要JSON.stringify() ,取出来JSON.parse()
+                    //本地存储 优点：刷新以后数据还在 缺点：取值不好用
+                    //vuex   优点：取值好取 缺点：刷新，数据就没了
+                    
+                    this.changeUserInfoAction(res.data.list)
+                    // 2.跳转页面
+                    this.$router.push("/")
+                }
+            })
+        }
+    
   },
   mounted() {},
 };

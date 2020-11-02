@@ -7,8 +7,8 @@
       border
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column prop="id" label="分类编号"></el-table-column>
-      <el-table-column prop="catename" label="分类名称"></el-table-column>
+      <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column prop="title" label="轮播图名称"></el-table-column>
       <el-table-column label="图片">
         <template slot-scope="scope">
           <img
@@ -16,7 +16,7 @@
             alt=""
             v-if="scope.row.img !== 'null'"
           />
-          
+       
         </template>
       </el-table-column>
 
@@ -40,7 +40,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { reqCateDel } from "../../../util/request";
+import { reqBannerDel } from "../../../util/request";
 import { alertSuccess, alertwaring } from "../../../util/alert";
 export default {
   props: ["info"],
@@ -50,17 +50,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      list: "classify/list",
+      list: "banner/list",
     }),
   },
   methods: {
     ...mapActions({
-      reqList: "classify/requestClaList",
+      reqList: "banner/requestClaList",
     }),
     edit(id) {
       this.$emit("edit", id);
     },
-    //点了删除
+   
 
     //点了删除
     // del(id) {
@@ -85,9 +85,10 @@ export default {
     //       });
     //     });
     // },
+  
     del2(id) {
       //发起请求删除数据
-      reqCateDel(id).then((res) => {
+      reqBannerDel(id).then((res) => {
         if (res.data.code === 200) {
           alertSuccess("删除成功");
           this.reqList();

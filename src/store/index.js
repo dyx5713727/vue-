@@ -2,11 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-import actions from'./actions'
+import {actions} from'./actions'
 import {state,mutations,getters} from'./mutations'
 import menu from './module/menu'
 import classify from './module/classify'
 import spces from './module/spces'
+import goods from './module/goods'
+import banner from './module/banner'
 export default new Vuex.Store({
     state,
     mutations,
@@ -15,6 +17,8 @@ export default new Vuex.Store({
     modules:{
         menu,
         classify,
-        spces
+        spces,
+        goods,
+        banner
     }
 })

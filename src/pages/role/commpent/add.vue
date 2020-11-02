@@ -48,12 +48,13 @@ export default {
   components: {},
   data() {
     return {
-      menulist: [],
+     
       form: {
         rolename: "",
         menus: "",
         status: 1,
       },
+       menulist: [],
     };
   },
   methods: {

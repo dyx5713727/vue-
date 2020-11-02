@@ -49,7 +49,6 @@ export default {
         nickname: "",
         phone: "",
         password: "",
-
         status: 1,
       },
     };
@@ -58,12 +57,6 @@ export default {
     cancel() {
       this.info.isshow = false;
     },
-    // changePid() {
-    //   if (this.form.pid == 0) {
-    //     this.form.type = 1;
-    //   } else {
-    //     this.form.type = 2;
-    //   }
     
     empty() {
       this.form = {
@@ -75,26 +68,12 @@ export default {
         status: 1,
       };
     },
-    // add() {
-    //   reqMenuAdd(this.form).then((res) => {
-    //     console.log(res);
-    //     if (res.data.code == 200) {
-    //       this.cancel();
-    //       alertSuccess(res.data.msg);
-    //       //重置form
-    //       this.empty();
-    //       //刷新list数据
-    //       this.$emit("init");
-    //     } else {
-    //       alertwaring(res.data.msg);
-    //     }
-    //   });
-    // },
+   
     //获取一条的数据
     getOne(uid) {
       //发起获取一条数据的请求
       reqMenberDetail(uid).then((res) => {
-        //目前form上是没有id字段
+      
         this.form = res.data.list;
         // console.log(res);
         //补id

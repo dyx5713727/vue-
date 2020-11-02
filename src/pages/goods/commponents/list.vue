@@ -8,10 +8,18 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
       <el-table-column prop="id" label="商品编号"></el-table-column>
-      <el-table-column prop="catename" label="商品名称"></el-table-column>
-      <el-table-column prop="catename" label="商品价格"></el-table-column>
-      <el-table-column prop="catename" label="市场价格"></el-table-column>
-      <el-table-column prop="catename" label="商品名称"></el-table-column>
+      <el-table-column prop="goodsname" label="商品名称"></el-table-column>
+      <el-table-column prop="" label="商品价格">
+        <template slot-scope="scope">
+            <span>{{scope.row.price}}</span>
+            
+        </template>
+      </el-table-column>
+      <el-table-column prop="catename" label="市场价格">
+        <template slot-scope="scope">
+            <span>{{scope.row.market_price}}</span>  
+        </template>
+      </el-table-column>
       <el-table-column label="图片">
         <template slot-scope="scope">
           <img
@@ -55,11 +63,24 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 
+      page-size :设置一页有几条数据 ，默认是10 
+      total:总数
+      current-change :当前页码发生改变的时候触发  
+      
+    -->
+    <el-pagination
+        layout="prev, pager, next"
+        :page-size="size"
+        @current-change="changePage"
+        :total="total">
+    </el-pagination>
   </div>
+  
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { reqCateDel } from "../../../util/request";
+import { reqGoodsDel } from "../../../util/request";
 import { alertSuccess, alertwaring } from "../../../util/alert";
 export default {
   props: ["info"],
@@ -69,53 +90,41 @@ export default {
   },
   computed: {
     ...mapGetters({
-      list: "classify/list",
+      list: "goods/list",
+      total: "goods/total",
+      size: "goods/size",
     }),
   },
   methods: {
     ...mapActions({
-      reqList: "classify/requestClaList",
+      // reqList: "goods/requestClaList",
+      reqlistAction: "goods/reqlistAction",
+     //商品总数
+      reqTotalAction:"goods/reqTotalAction",
+      changePageAction:'goods/changePageAction'
+      
     }),
     edit(id) {
       this.$emit("edit", id);
     },
-    //点了删除
+     //修改页码
+    changePage(page){
+      this.changePageAction(page)
+    },
 
-    //点了删除
-    // del(id) {
-    //   this.$confirm("你确定要删除吗?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning",
-    //   })
-    //     .then(() => {
-    //       //发起请求删除数据
-    //       reqCateDel(id).then((res) => {
-    //         if (res.data.code === 200) {
-    //           alertSuccess("删除成功");
-    //           this.reqList();
-    //         }
-    //       });
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: "已取消删除",
-    //       });
-    //     });
-    // },
     del2(id) {
       //发起请求删除数据
-      reqCateDel(id).then((res) => {
+      reqGoodsDel(id).then((res) => {
         if (res.data.code === 200) {
           alertSuccess("删除成功");
-          this.reqList();
+          this.reqlistAction();
         }
       });
     },
   },
   mounted() {
-    this.reqList();
+    this.reqlistAction();
+    this.reqTotalAction()
     // console.log(this.$store);
   },
 };

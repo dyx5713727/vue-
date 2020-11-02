@@ -360,3 +360,63 @@ export const reqGoodsCount = () => {
         method: "get",
     })
 }
+
+//轮播图
+//轮播图添加
+export const reqBannerAdd = (data) => {
+    return axios({
+        url: baseUrl + "/api/banneradd",
+        method: "post",
+        data: data
+    })
+}
+
+//轮播图list
+export const reqBannerList = () => {
+    return axios({
+        url:baseUrl + "/api/bannerlist",
+        method: "get",
+       
+    })
+}
+
+//轮播图删除
+export const reqBannerDel = (id) => {
+    return axios({
+        url: baseUrl + "/api/bannerdelete",
+        method: "post",
+        data: qs.stringify({
+            id: id
+        })
+    })
+}
+
+//轮播图详情
+export const reqBannerDetail = (id) => {
+    return axios({
+        url: baseUrl + "/api/bannerinfo",
+        method: "get",
+        params: {
+            id: id
+        }
+    })
+}
+
+//轮播图修改
+export const reqBannerUpdate = (data) => {
+    return axios({
+        url: baseUrl + "/api/banneredit",
+        method: "post",
+        data: data
+    })
+}
+
+
+//登录
+export const reqLogin = (form) => {
+    return axios({
+        url: baseUrl + "/api/userlogin",
+        method: "post",
+        data: qs.stringify(form)
+    })
+}

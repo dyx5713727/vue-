@@ -2,21 +2,8 @@
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isshow">
       <el-form :model="form">
-        <el-form-item label="上级分类" label-width="120px">
-          <el-select v-model="form.pid" placeholder="请选择活动区域">
-            <el-option label="--请选择--" value disabled></el-option>
-            <el-option label="顶级菜单" :value="0"></el-option>
-            <el-option
-              v-for="item in list"
-              :key="item.id"
-              :label="item.catename"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="分类名称" label-width="120px">
-          <el-input v-model="form.catename" autocomplete="off"></el-input>
+        <el-form-item label="标题" label-width="120px">
+          <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图片" label-width="120px">
           <div class="myUpload">
@@ -51,25 +38,24 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import {
-  reqCateAdd,
+  reqBannerAdd,
   reqMenuList,
-  reqCateUpdate,
-  reqCateDetail,
+  reqBannerUpdate,
+  reqBannerDetail,
 } from "../../../util/request";
 import { alertSuccess, alertwaring } from "../../../util/alert";
 export default {
   props: ["info"],
   computed: {
     ...mapGetters({
-      list: "classify/list",
+      list: "banner/list",
     }),
   },
   components: {},
   data() {
     return {
       form: {
-        pid: "",
-        catename: "",
+        title: "",
         img: null,
         status: 1,
       },
@@ -79,20 +65,21 @@ export default {
   methods: {
     ...mapActions({
       //获取分类list
-      reqList: "classify/requestClaList",
+      reqList: "banner/requestClaList",
     }),
     cancel() {
       this.info.isshow = false;
     },
 
     changeFile(e) {
-       let file=e.target.files[0]
+    
+      let file = e.target.files[0];
+      // console.log(file);
       //将文件file转为一个地址
-       this.imgUrl=URL.createObjectURL(file);
-       //给form的img赋值文件
-       this.form.img=file;
-      
-      // console.log( this.form.imgUrl);
+      this.imgUrl = URL.createObjectURL(file);
+
+      //给form的img赋值文件
+      this.form.img = file;
     },
     // changePid() {
     //   if (this.form.pid == 0) {
@@ -103,19 +90,19 @@ export default {
 
     empty() {
       this.form = {
-        pid: "",
-        catename: "",
+         title: "",
         img: null,
         status: 1,
       };
       this.imgUrl = "";
     },
     add() {
+      console.log(this.form);
       let data = new FormData();
       for (let i in this.form) {
         data.append(i, this.form[i]);
       }
-      reqCateAdd(data).then((res) => {
+      reqBannerAdd(data).then((res) => {
         if (res.data.code == 200) {
           alertSuccess(res.data.msg);
           this.cancel();
@@ -130,7 +117,7 @@ export default {
     //获取一条的数据
     getOne(id) {
       //发起获取一条数据的请求
-      reqCateDetail(id).then((res) => {
+      reqBannerDetail(id).then((res) => {
         //目前form上是没有id字段
         this.form = res.data.list;
         // console.log(res);
@@ -146,7 +133,7 @@ export default {
         data.append(i, this.form[i]);
       }
       // console.log(this.form);
-      reqCateUpdate(data).then((res) => {
+      reqBannerUpdate(data).then((res) => {
         if (res.data.code === 200) {
           //弹框消失
           this.cancel();
