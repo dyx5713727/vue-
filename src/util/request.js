@@ -1,7 +1,20 @@
 import axios from 'axios'
 import qs from 'qs'
 import Vue from "vue"
+import store from "../store"
 import { alertwaring } from './alert'
+import router from "../router"
+
+// 前端每一个请求,除了登录之外，都需要携带一个headers.authorization ,值是用户登录成功的token
+//请求拦截
+axios.interceptors.request.use(req => {
+    if (req.url !== baseUrl + "/api/userlogin") {
+        req.headers.authorization = store.state.userInfo.token;
+    }
+    return req;
+})
+
+
 //响应拦截
 axios.interceptors.response.use(res => {
     console.log("本次请求的地址是：" + res.config.url)
@@ -10,6 +23,13 @@ axios.interceptors.response.use(res => {
     if (res.data.code !== 200) {
         alertwaring(res.data.msg)
     }
+    //判断是否登录过期  msg="登录已过期或访问权限受限"
+    if (res.data.msg === "登录已过期或访问权限受限") {
+        router.push('/login')
+        //用户信息置空
+        store.dispatch("changeUserInfoAction", {})
+    }
+
     return res;
 })
 
@@ -209,7 +229,7 @@ export const reqCateAdd = (data) => {
 //分类list
 export const reqCateList = (params) => {
     return axios({
-        url:baseUrl + "/api/catelist",
+        url: baseUrl + "/api/catelist",
         method: "get",
         params: params
     })
@@ -374,9 +394,9 @@ export const reqBannerAdd = (data) => {
 //轮播图list
 export const reqBannerList = () => {
     return axios({
-        url:baseUrl + "/api/bannerlist",
+        url: baseUrl + "/api/bannerlist",
         method: "get",
-       
+
     })
 }
 
@@ -408,6 +428,55 @@ export const reqBannerUpdate = (data) => {
         url: baseUrl + "/api/banneredit",
         method: "post",
         data: data
+    })
+}
+
+//限时秒杀添加
+export const reqSeckillAdd = (form) => {
+    return axios({
+        url: baseUrl + "/api/seckadd",
+        method: "post",
+        data: form
+    })
+}
+
+//限时秒杀列表 params={page:1,size:10}
+export const reqSeckillList = () => {
+    return axios({
+        url: baseUrl + "/api/secklist",
+        method: "get",
+       
+    })
+}
+
+//限时秒杀详情 1条
+export const reqSeckillDetail = (id) => {
+    return axios({
+        url: baseUrl + "/api/seckinfo",
+        method: "get",
+        params: {
+            id: id
+        }
+    })
+}
+
+//限时秒杀修改
+export const reqSeckillUpdate = (form) => {
+    return axios({
+        url: baseUrl + "/api/seckedit",
+        method: "post",
+        data: form
+    })
+}
+
+//限时秒杀删除
+export const reqSeckillDel = (id) => {
+    return axios({
+        url: baseUrl + "/api/seckdelete",
+        method: "post",
+        data: qs.stringify({
+            id: id
+        })
     })
 }
 

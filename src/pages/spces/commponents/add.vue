@@ -74,7 +74,7 @@ export default {
     ...mapActions({
       //获取分类list
       reqList: "spces/reqlistAction",
-        reqTotal: "spces/reqTotalAction",
+      reqTotal: "spces/reqTotalAction",
     }),
     cancel() {
       this.info.isshow = false;
@@ -96,12 +96,6 @@ export default {
       //给form的img赋值文件
       this.form.imgUrl = file;
     },
-    // changePid() {
-    //   if (this.form.pid == 0) {
-    //     this.form.type = 1;
-    //   } else {
-    //     this.form.type = 2;
-    //   }
 
     empty() {
       this.form = {
@@ -111,21 +105,39 @@ export default {
       };
       this.attrArr = [{ val: "" }];
     },
+    //验证
+    checked() {
+      return new Promise((resolve, reject) => {
+        //验证数据是否均不为空
+        if (this.form.specsname === "") {
+          alertwaring("规格名字不能为空");
+          return;
+        }
+        if (this.form.attrs === 0) {
+          alertwaring("规格属性不能为空");
+          return;
+        }
+
+        resolve();
+      });
+    },
     add() {
       //[{val:"1"},{val:"2"}]  --->["1","2"]
-      this.form.attrs = JSON.stringify(this.attrArr.map((item) => item.val));
-      console.log(this.form);
-      reqSpecAdd(this.form).then((res) => {
-        // console.log(res);
-        if (res.data.code == 200) {
-          this.empty();
-          this.cancel();
-          alertSuccess(res.data.msg);
-          //刷新list
-          this.reqList();
-          //总数
-          this.reqTotal()
-        }
+      this.checked().then(() => {
+        this.form.attrs = JSON.stringify(this.attrArr.map((item) => item.val));
+        console.log(this.form);
+        reqSpecAdd(this.form).then((res) => {
+          // console.log(res);
+          if (res.data.code == 200) {
+            this.empty();
+            this.cancel();
+            alertSuccess(res.data.msg);
+            //刷新list
+            this.reqList();
+            //总数
+            this.reqTotal();
+          }
+        });
       });
     },
     //获取一条的数据

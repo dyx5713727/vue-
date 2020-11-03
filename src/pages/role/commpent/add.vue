@@ -48,13 +48,12 @@ export default {
   components: {},
   data() {
     return {
-     
       form: {
         rolename: "",
         menus: "",
         status: 1,
       },
-       menulist: [],
+      menuList: [],
     };
   },
   methods: {
@@ -80,7 +79,16 @@ export default {
     cancel() {
       this.info.isshow = false;
     },
+   
     add() {
+      if (this.form.rolename === "") {
+        alertwaring("用户名称不能为空哦！");
+        return;
+      }
+      if (this.$refs.tree.getCheckedKeys().length === 0) {
+        alertwaring("角色必须分配权限");
+        return;
+      }
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       reqRoleAdd(this.form).then((res) => {
         if (res.data.code == 200) {

@@ -42,7 +42,7 @@
         <el-form-item label="菜单地址" label-width="120px" v-else>
           <el-select v-model="form.pid" placeholder="请选择活动区域">
             <el-option
-              v-for="item in indexRouters"
+              v-for="item in indexRoutes"
               :key="item.path"
               :label="item.name"
               :value="'/' + item.path"
@@ -68,7 +68,7 @@
   </div>
 </template>
 <script>
-// import { indexRouters } from "../../../router/index";
+import { indexRoutes } from "../../../router/index";
 import {
   reqMenuAdd,
   reqMenuList,
@@ -82,27 +82,22 @@ export default {
   data() {
     return {
       form: {
-       first_cateid:"",
-        second_cateid:"",
-        goodsname:"",
-        price:"",
-        market_price:"",
-        img:null,
-        description:"",
-        specsid:"",
-        specsattr:[],//发起请求之前需要JSON.stringify()
-        isnew:1,
-        ishot:1,
-        status:1
+       pid: "",
+        title: "",
+        icon: "",
+        type: "",
+        url: "",
+        status: 1
       },
-       //二级分类的list
-      secondCateList:[],
-
-      //规格属性的list
-      attrList:[],
-
-      //上传图片的临时地址
-      imgUrl:"",
+         //图标集合
+      icons: [
+        "el-icon-s-tools",
+        "el-icon-message-solid",
+        "el-icon-s-check",
+        "el-icon-s-data"
+      ],
+      //地址集合
+      indexRoutes: indexRoutes
     };
   },
   methods: {
@@ -118,21 +113,42 @@ export default {
     },
     empty() {
       this.form = {
-       first_cateid:"",
-        second_cateid:"",
-        goodsname:"",
-        price:"",
-        market_price:"",
-        img:null,
-        description:"",
-        specsid:"",
-        specsattr:[],//发起请求之前需要JSON.stringify()
-        isnew:1,
-        ishot:1,
-        status:1
+       pid: "",
+        title: "",
+        icon: "",
+        type: "",
+        url: "",
+        status: 1
       };
     },
+      //验证
+    checked(){
+      return new Promise((resolve,reject)=>{
+        //验证数据是否均不为空
+         if(this.form.title===""){
+          alertwaring("菜单标题不能为空")
+          return;
+        }
+        if(this.form.pid===""){
+          alertwaring("上级菜单不能为空")
+          return;
+        }
+       
+        if(this.form.icon===""||this.form.type===1){
+          alertwaring("菜单图标不能为空")
+          return;
+        }
+        if(this.form.url===""||!this.form.pid == 0){
+          alertwaring("菜单地址不能为空")
+          return;
+        }
+        resolve()
+      })
+
+      
+    },
     add() {
+        this.checked().then(()=>{
       reqMenuAdd(this.form).then((res) => {
         console.log(res);
         if (res.data.code == 200) {
@@ -145,6 +161,7 @@ export default {
         } else {
           alertwaring(res.data.msg);
         }
+      })
       });
     },
     //获取一条的数据

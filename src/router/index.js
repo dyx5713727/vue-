@@ -1,9 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store/index'
 
 Vue.use(Router)
 
-
+function checkedRoute(path, next) {
+  //如果该用户 menus_url 中有 "/menu"就next();没有，next("/")
+  let userInfo = store.state.userInfo;
+  if (userInfo.menus_url.includes(path)) {
+    next()
+  } else {
+    next("/")
+  }
+}
 
 const home = () => import('../pages/home/home')
 
@@ -18,46 +27,71 @@ const goods = () => import('../pages/goods/goods')
 const member = () => import('../pages/member/member')
 
 
-export const indexRouters = [
+export const indexRoutes = [
   {
     path: 'role',
     component: role,
-    name: '角色列表'
+    name: '角色列表',
+    beforeEnter: (to, from, next) => {
+      checkedRoute("/role", next)
+    }
   },
+
   {
-    path: 'manger',
+    path: 'manage',
     component: manger,
-    name: '管理员列表'
+    name: '管理员列表',
+    beforeEnter(to, from, next) {
+      checkedRoute("/manage", next)
+    }
   },
   {
     path: 'menu',
     component: menu,
-    name: '菜单列表'
+    name: '菜单列表',
+    beforeEnter(to, from, next) {
+      checkedRoute("/menu", next)
+    }
   },
   {
-    path: 'spces',
+    path: 'spec',
     component: spces,
-    name: '商品规格'
+    name: '商品规格',
+    beforeEnter(to, from, next) {
+      checkedRoute("/spec", next)
+    }
   },
   {
-    path: 'loop',
+    path: 'banner',
     component: loop,
-    name: '轮播图'
+    name: '轮播图',
+    beforeEnter(to, from, next) {
+      checkedRoute("/banner", next)
+    }
   },
   {
     path: 'seckill',
     component: seckill,
-    name: '秒杀活动'
+    name: '秒杀活动',
+    beforeEnter(to, from, next) {
+      checkedRoute("/seckill", next)
+    }
   },
   {
-    path: 'classify',
+    path: 'cate',
     component: classify,
-    name: '商品分类'
+    name: '商品分类',
+    beforeEnter(to, from, next) {
+      checkedRoute("/cate", next)
+    }
   },
   {
     path: 'goods',
     component: goods,
-    name: '商品列表'
+    name: '商品列表',
+    beforeEnter(to, from, next) {
+      checkedRoute("/goods", next)
+    }
   },
   {
     path: 'member',
@@ -68,7 +102,7 @@ export const indexRouters = [
 
 
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/login',
@@ -80,10 +114,25 @@ export default new Router({
       children: [
         {
           path: "",
-          component:()=>import("../pages/home/home")
-        },
+          component: () => import("../pages/home/home")
+        }
         // ...indexRouters
-      ].concat(indexRouters)
+      ].concat(indexRoutes)
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    next()
+    return
+  }
+  //  如果前往的不是登录，判断是否登陆 ,从vuex|sessionStorage 取值
+  let userInfo = store.state.userInfo
+  if (userInfo.username) {
+    next()
+    return
+  }
+  //如果没有登录 ，next("/login")
+  next("/login")
+})
+export default router

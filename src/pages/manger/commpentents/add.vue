@@ -70,8 +70,31 @@ export default {
         status: 1
       };
     },
+        //验证
+    checked(){
+      return new Promise((resolve,reject)=>{
+        //验证数据是否均不为空
+        if(this.form.roleid===""){
+          alertwaring("所属角色不能为空")
+          return;
+        }
+        if(this.form.username===""){
+          alertwaring("用户名不能为空")
+          return;
+        }
+        if(this.form.password===""){
+          alertwaring("密码称不能为空")
+          return;
+        }
+        
+        resolve()
+      })
+
+      
+    },
     add() {
       // console.log(this.form);
+            this.checked().then(()=>{
       reqManageAdd(this.form).then((res) => {
         // console.log(111);
         // console.log(res);
@@ -85,6 +108,7 @@ export default {
         } else {
           alertwaring(res.data.msg);
         }
+      })
       });
     },
     //获取一条的数据

@@ -9,6 +9,7 @@ import classify from './module/classify'
 import spces from './module/spces'
 import goods from './module/goods'
 import banner from './module/banner'
+import seckill from './module/seckill'
 export default new Vuex.Store({
     state,
     mutations,
@@ -19,6 +20,7 @@ export default new Vuex.Store({
         classify,
         spces,
         goods,
-        banner
+        banner,
+        seckill
     }
 })

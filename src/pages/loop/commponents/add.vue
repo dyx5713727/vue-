@@ -81,12 +81,7 @@ export default {
       //给form的img赋值文件
       this.form.img = file;
     },
-    // changePid() {
-    //   if (this.form.pid == 0) {
-    //     this.form.type = 1;
-    //   } else {
-    //     this.form.type = 2;
-    //   }
+ 
 
     empty() {
       this.form = {
@@ -96,8 +91,27 @@ export default {
       };
       this.imgUrl = "";
     },
+      //验证
+    checked(){
+      return new Promise((resolve,reject)=>{
+        //验证数据是否均不为空
+        if(this.form.title===""){
+          alertwaring("标题不能为空")
+          return;
+        }
+        if(!this.form.img){
+          alertwaring("请选择图片")
+          return;
+        }
+       
+        resolve()
+      })
+
+      
+    },
     add() {
-      console.log(this.form);
+      this.checked().then(()=>{
+      // console.log(this.form);
       let data = new FormData();
       for (let i in this.form) {
         data.append(i, this.form[i]);
@@ -112,6 +126,7 @@ export default {
         } else {
           alertwaring(res.data.msg);
         }
+        })
       });
     },
     //获取一条的数据

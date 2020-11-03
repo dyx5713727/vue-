@@ -94,13 +94,6 @@ export default {
       
       // console.log( this.form.imgUrl);
     },
-    // changePid() {
-    //   if (this.form.pid == 0) {
-    //     this.form.type = 1;
-    //   } else {
-    //     this.form.type = 2;
-    //   }
-
     empty() {
       this.form = {
         pid: "",
@@ -110,7 +103,29 @@ export default {
       };
       this.imgUrl = "";
     },
+      //验证
+    checked(){
+      return new Promise((resolve,reject)=>{
+        //验证数据是否均不为空
+        if(this.form.pid===""){
+          alertwaring("上级分类不能为空")
+          return;
+        }
+        if(this.form.catename===""){
+          alertwaring("商品名称不能为空")
+          return;
+        }
+        if(!this.form.img){
+          alertwaring("请选择图片")
+          return;
+        }
+        resolve()
+      })
+
+      
+    },
     add() {
+      this.checked().then(()=>{
       let data = new FormData();
       for (let i in this.form) {
         data.append(i, this.form[i]);
@@ -125,6 +140,7 @@ export default {
         } else {
           alertwaring(res.data.msg);
         }
+      })
       });
     },
     //获取一条的数据
